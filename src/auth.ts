@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import * as jwt from "jsonwebtoken";
 import { getDB } from './db/mongo';
 import { ObjectId } from 'mongodb';
-import { COLLECTION_USERS } from './utils';
+import { COLLECTION_TRAINERS } from './utils';
 
 dotenv.config()
 
@@ -13,7 +13,6 @@ type TokenPayload = {
 }
 
 export const signToken = (userId: string) => jwt.sign({ userId }, SUPER_SECRETO!, { expiresIn: "1h" });
-
 export const verifyToken = (token: string): TokenPayload | null => {
     try{
         if(!SUPER_SECRETO) throw new Error("SECRET is not defined in environment variables");
@@ -27,7 +26,7 @@ export const getUserFromToken = async (token: string) => {
     const payload = verifyToken(token);
     if(!payload) return null;
     const db = getDB();
-    return await db.collection(COLLECTION_USERS).findOne({
+    return await db.collection(COLLECTION_TRAINERS).findOne({
         _id: new ObjectId(payload.userId)
     })
 }

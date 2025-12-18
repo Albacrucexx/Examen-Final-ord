@@ -1,3 +1,4 @@
+console.log("ESTE ES MI INDEX.TS ");
 import { ApolloServer } from "apollo-server";
 import { connectToMongoDB } from "./db/mongo"
 import { typeDefs } from "./graphql/schema";
@@ -16,8 +17,7 @@ const start = async () => {
       return { user };
     },
   });
-
-  await server.listen({ port: 4000 });
+  const { url } = await server.listen(4000);
   console.log("GQL sirviendo y de to");
 };
 

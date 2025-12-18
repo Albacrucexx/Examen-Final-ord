@@ -1,5 +1,5 @@
 
-export type ClothingUser = {
+export type Trainer = {
     _id: string;
     email: string;
     clothes: string[];
