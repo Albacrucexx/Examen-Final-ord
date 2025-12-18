@@ -10,7 +10,7 @@ export const startJourney = async (name: string, password: string) => {
   if (exists) throw new Error("Trainer already exists");
 
   const hash = await bcrypt.hash(password, 10);
-  
+
   const result = await db.collection(COLLECTION_TRAINERS).insertOne({
     name,
     password: hash,

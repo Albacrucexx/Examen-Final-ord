@@ -9,7 +9,7 @@ export const getPokemons = async (page = 1, size = 10) =>
     .skip((page - 1) * size)
     .limit(size)
     .toArray();
-    
+
 export const getPokemonById = async (id: string) =>
   getDB()
     .collection(COLLECTION_POKEMONS)

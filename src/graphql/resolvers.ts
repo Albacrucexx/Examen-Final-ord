@@ -13,7 +13,7 @@ export const resolvers: IResolvers = {
     pokemons: (_, { page, size }) => getPokemons(page, size),
     pokemon: (_, { id }) => getPokemonById(id)
   },
-  
+
   Mutation: {
     startJourney: async (_, { name, password }) =>
       signToken(await startJourney(name, password)),
@@ -55,12 +55,13 @@ export const resolvers: IResolvers = {
                .toArray();
     }
   },
-
+  
   OwnedPokemon: {
     pokemon: async (parent) => {
+        if (!parent.pokemon) return null;
       const db = getDB();
       return db.collection(COLLECTION_POKEMONS)
-               .findOne({ _id: new ObjectId(parent.pokemonId) });
+               .findOne({ _id: new ObjectId(parent.pokemon) });
     }
   }
 };
