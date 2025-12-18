@@ -1,6 +1,8 @@
 import { ObjectId } from "mongodb";
 import { getDB } from "../db/mongo";
-import { COLLECTION_OWNED, COLLECTION_TRAINERS } from "../utils";
+import { COLLECTION_OWNED, COLLECTION_TRAINERS} from "../utils";
+
+const rand = () => Math.floor(Math.random() * 100) + 1;
 
 export const catchPokemon = async (
   pokemonId: string,
@@ -9,23 +11,36 @@ export const catchPokemon = async (
 ) => {
   const db = getDB();
 
-  const owned = await db.collection(COLLECTION_OWNED).insertOne({
+  const trainer = await db
+    .collection(COLLECTION_TRAINERS)
+    .findOne({ _id: new ObjectId(trainerId) });
+
+  if (!trainer) {
+    throw new Error("Trainer not found");
+  }
+
+  if (trainer.pokemons.length >= 6) {
+    throw new Error("Trainer already has 6 pokemons");
+  }
+  
+  const ownedResult = await db.collection(COLLECTION_OWNED).insertOne({
     pokemonId,
     nickname,
-    attack: 10,
-    defense: 10,
-    speed: 10,
-    special: 10,
+    attack: rand(),
+    defense: rand(),
+    speed: rand(),
+    special: rand(),
     level: 1
   });
 
   await db.collection(COLLECTION_TRAINERS).updateOne(
     { _id: new ObjectId(trainerId) },
-    { $addToSet: { pokemons: owned.insertedId.toString() } }
+    { $addToSet: { pokemons: ownedResult.insertedId.toString() } }
   );
 
-  return db.collection(COLLECTION_OWNED)
-           .findOne({ _id: owned.insertedId });
+  return db.collection(COLLECTION_OWNED).findOne({
+    _id: ownedResult.insertedId
+  });
 };
 
 export const freePokemon = async (
@@ -34,14 +49,28 @@ export const freePokemon = async (
 ) => {
   const db = getDB();
 
+  const trainer = await db
+    .collection(COLLECTION_TRAINERS)
+    .findOne({ _id: new ObjectId(trainerId) });
+
+  if (!trainer) {
+    throw new Error("Trainer not found");
+  }
+
+  if (!trainer.pokemons.includes(ownedPokemonId)) {
+    throw new Error("Pokemon does not belong to trainer");
+  }
+
   await db.collection(COLLECTION_TRAINERS).updateOne(
     { _id: new ObjectId(trainerId) },
     { $pull: { pokemons: ownedPokemonId as any } }
   );
 
-  await db.collection(COLLECTION_OWNED)
-          .deleteOne({ _id: new ObjectId(ownedPokemonId) });
+  await db.collection(COLLECTION_OWNED).deleteOne({
+    _id: new ObjectId(ownedPokemonId)
+  });
 
-  return db.collection(COLLECTION_TRAINERS)
-           .findOne({ _id: new ObjectId(trainerId) });
+  return db.collection(COLLECTION_TRAINERS).findOne({
+    _id: new ObjectId(trainerId)
+  });
 };

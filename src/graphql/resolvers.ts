@@ -13,7 +13,7 @@ export const resolvers: IResolvers = {
     pokemons: (_, { page, size }) => getPokemons(page, size),
     pokemon: (_, { id }) => getPokemonById(id)
   },
-
+  
   Mutation: {
     startJourney: async (_, { name, password }) =>
       signToken(await startJourney(name, password)),
