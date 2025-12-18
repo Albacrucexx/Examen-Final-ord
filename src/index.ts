@@ -21,6 +21,4 @@ const start = async () => {
   console.log("GQL sirviendo y de to");
 };
 
-
-
 start().catch(err=>console.error(err));

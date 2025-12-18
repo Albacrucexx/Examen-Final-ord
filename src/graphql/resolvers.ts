@@ -2,7 +2,7 @@ import { IResolvers } from "@graphql-tools/utils";
 import { addClothing, buyClothing, getClothes, getClothingById } from "../collections/productsClothingStore";
 import { createUser, validateUser } from "../collections/usersClothingStore";
 import { signToken } from "../auth";
-import { ClothingUser } from "../../types";
+import { ClothingUser } from "../types";
 import { getDB } from "../db/mongo";
 import { ObjectId } from "mongodb";
 

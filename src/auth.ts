@@ -6,7 +6,6 @@ import { COLLECTION_USERS } from './utils';
 
 dotenv.config()
 
-
 const SUPER_SECRETO = process.env.SUPER_SECRET;
 
 type TokenPayload = {
